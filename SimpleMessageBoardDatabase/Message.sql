@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[Message]
+(
+	[Id] INT NOT NULL PRIMARY KEY, 
+    [Message] NVARCHAR(MAX) NOT NULL, 
+    [User] NVARCHAR(255) NULL, 
+    [Added] DATETIME NOT NULL DEFAULT GETDATE()
+)
