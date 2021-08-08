@@ -6,17 +6,72 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome to the Simple Message Board</h1>
+    <div class="card card-body mb-3">
+        <form id="addMessage" class="row" method="post">
+            <div class="col-auto">
+                <label for="message" class="form-label mt-2">Message</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" class="form-control" id="message" name="message" placeholder="Your message">
+            </div>
+            <div class="col-auto">
+                <label for="user" class="form-label mt-2">Username</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" class="form-control" id="user" name="user" placeholder="Username">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary col-auto">Add Message</button>
+            </div>
+        </form>
+    </div>
     <div id="messages" class="row row-cols-1 row-cols-md-2 g-4"></div>
     <script>
-        $.ajax({
-            type: 'GET',
-            url: "https://localhost:44398/api/MessageItems",
-            crossDomain: true,
-            success: function (data) {
-                data.forEach(item => {
-                    $("#messages").append("<div class='col'><div class='card'><div class='card-header bg-primary text-white'>" + item.id + "</div><div class='card-body'>" + item.message + "</div><div class='card-footer'>" + item.user + "</div></div></div>");
+        function loadMessages() {
+            $.ajax({
+                type: 'GET',
+                url: "https://localhost:44398/api/MessageItems",
+                crossDomain: true,
+                success: function (data) {
+                    $("#messages").html("");
+                    data.forEach(item => {
+                        $("#messages").append("<div class='col'><div class='card mb-3'><div class='card-header bg-primary text-white'>" + item.id + "</div><div class='card-body'>" + item.message + "</div><div class='card-footer'>" + item.user + "</div></div></div>");
+                    });
+                }
+            });
+        }
+
+        loadMessages();
+
+        function getFormData(data) {
+            var unindexed_array = data;
+            var indexed_array = {};
+
+            $.map(unindexed_array, function (n, i) {
+                indexed_array[n['name']] = n['value'];
+            });
+
+            return indexed_array;
+        }
+
+        $(function () {
+            $("#addMessage").submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    url: "https://localhost:44398/api/MessageItems",
+                    type: 'post',
+                    dataType: 'json',
+                    data: JSON.stringify(getFormData($('#addMessage').serializeArray())),
+                    success: function (data) {
+                        loadMessages();
+                        alert("Message added");
+                    }
                 });
-            }
+            });
         });
     </script>
 </div>
