@@ -5,6 +5,18 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to the Simple Message Board</h1>
+    <div id="messages" class="row row-cols-1 row-cols-md-2 g-4"></div>
+    <script>
+        $.ajax({
+            type: 'GET',
+            url: "https://localhost:44398/api/MessageItems",
+            crossDomain: true,
+            success: function (data) {
+                data.forEach(item => {
+                    $("#messages").append("<div class='col'><div class='card'><div class='card-header bg-primary text-white'>" + item.id + "</div><div class='card-body'>" + item.message + "</div><div class='card-footer'>" + item.user + "</div></div></div>");
+                });
+            }
+        });
+    </script>
 </div>

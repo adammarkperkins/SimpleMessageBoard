@@ -21,6 +21,19 @@ namespace SimpleMessageBoardApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder
+                            //.AllowAnyOrigin()
+                            .WithOrigins(
+                                "https://localhost:44302")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
 
             services.AddControllers();
             services.AddEntityFrameworkSqlServer();
@@ -46,6 +59,9 @@ namespace SimpleMessageBoardApi
 
             app.UseRouting();
 
+            app.UseCors();
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
